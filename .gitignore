@@ -89,7 +89,3 @@ ENV/
 
 # Rope project settings
 .ropeproject
-
-# Pyenet specific files
-enet.c
-enet/
