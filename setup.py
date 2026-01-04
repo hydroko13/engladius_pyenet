@@ -1,4 +1,4 @@
-# THIS CODE WAS CREATED USING CHATGPT
+# this code was written by chatgpt
 
 from setuptools import setup, Extension
 from Cython.Build import cythonize
@@ -27,19 +27,15 @@ define_macros = [
 
 libraries = []
 
-# Windows specific settings
 if sys.platform == 'win32':
     define_macros.extend([('WIN32', None)])
     libraries.extend(['ws2_32', 'Winmm'])
 
-# macOS: skip gethostbyname_r macros
 if sys.platform != 'darwin':
     define_macros.extend([('HAS_GETHOSTBYNAME_R', None), ('HAS_GETHOSTBYADDR_R', None)])
 
-# Compiler flags
 extra_compile_args = ["-O3"]
 if sys.platform == 'win32':
-    # MSVC uses different optimization flag
     extra_compile_args = ["/O2"]
 
 ext_modules = [
