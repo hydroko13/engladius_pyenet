@@ -1,47 +1,61 @@
-from distutils.core import setup
-from distutils.extension import Extension
-from Cython.Distutils import build_ext
+# THIS CODE WAS CREATED USING CHATGPT
 
+from setuptools import setup, Extension
+from Cython.Build import cythonize
 import glob
 import sys
+import os
 
 source_files = ["enet.pyx"]
 
-_enet_files = glob.glob("enet/*.c")
+_enet_files = glob.glob(os.path.join("enet", "*.c"))
 
 if not _enet_files:
-    print("You need to download and extract the enet 1.3 source to enet/")
+    print("You need to download and extract the ENet 1.3 source to enet/")
     print("Download the source from: http://enet.bespin.org/Downloads.html")
     print("See the README for more instructions")
     sys.exit(1)
 
 source_files.extend(_enet_files)
 
-define_macros = [('HAS_POLL', None),
-                 ('HAS_FCNTL', None),
-                 ('HAS_MSGHDR_FLAGS', None),
-                 ('HAS_SOCKLEN_T', None) ]
+define_macros = [
+    ('HAS_POLL', None),
+    ('HAS_FCNTL', None),
+    ('HAS_MSGHDR_FLAGS', None),
+    ('HAS_SOCKLEN_T', None)
+]
 
 libraries = []
 
+# Windows specific settings
 if sys.platform == 'win32':
     define_macros.extend([('WIN32', None)])
     libraries.extend(['ws2_32', 'Winmm'])
 
+# macOS: skip gethostbyname_r macros
 if sys.platform != 'darwin':
     define_macros.extend([('HAS_GETHOSTBYNAME_R', None), ('HAS_GETHOSTBYADDR_R', None)])
+
+# Compiler flags
+extra_compile_args = ["-O3"]
+if sys.platform == 'win32':
+    # MSVC uses different optimization flag
+    extra_compile_args = ["/O2"]
 
 ext_modules = [
     Extension(
         "enet",
-        extra_compile_args=["-O3"],
         sources=source_files,
-        include_dirs=["enet/include/"],
+        include_dirs=[os.path.join("enet", "include")],
         define_macros=define_macros,
-        libraries=libraries)]
+        libraries=libraries,
+        extra_compile_args=extra_compile_args,
+        language="c",
+    )
+]
 
 setup(
-  name = 'enet',
-  cmdclass = {'build_ext': build_ext},
-  ext_modules = ext_modules
+    name="enet",
+    ext_modules=cythonize(ext_modules, compiler_directives={'language_level': "3"}),
+    zip_safe=False,
 )

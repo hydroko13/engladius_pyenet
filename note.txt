@@ -1,0 +1,8 @@
+NOTE:
+Pyenet is maintained by Andrew Resch
+It is licensed under BSD, the details of this license can be found in the file called `LICENSE` in the root directory of this repository
+The original repository of pyenet can be found at https://github.com/aresch/pyenet
+
+Modifications made:
+    - I used ChatGPT to update the setup.py script to work with setuptools instead of distutils so it works in python 3.12
+
